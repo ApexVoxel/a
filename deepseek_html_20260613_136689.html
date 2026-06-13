@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Hydra Nude · Eternal Media Vault</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0f;
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            color: #ededee;
+            line-height: 1.5;
+            padding: 2rem 1.5rem;
+        }
+
+        /* container */
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* header */
+        .brand {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+        .brand h1 {
+            font-size: 3.2rem;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #ffb7c5, #ff6f91, #c44b6c);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 10px rgba(255, 80, 120, 0.3);
+            font-weight: 800;
+        }
+        .brand p {
+            color: #8e8ea8;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+        }
+        .badge {
+            background: #1e1e2a;
+            display: inline-block;
+            padding: 0.2rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            color: #ffb7c5;
+            margin-top: 0.8rem;
+        }
+
+        /* upload zone */
+        .upload-card {
+            background: rgba(18, 18, 26, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #2c2c3a;
+            border-radius: 2rem;
+            padding: 1.8rem;
+            margin-bottom: 3rem;
+            transition: all 0.2s ease;
+        }
+        .dropzone {
+            border: 2px dashed #3a3a4a;
+            border-radius: 1.5rem;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            background: #0f0f17;
+        }
+        .dropzone.drag-over {
+            border-color: #ff6f91;
+            background: #1a1220;
+            transform: scale(0.99);
+        }
+        .dropzone input {
+            display: none;
+        }
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        .upload-btn {
+            background: linear-gradient(95deg, #ff4d6d, #c9184a);
+            border: none;
+            padding: 0.8rem 1.8rem;
+            border-radius: 3rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+            margin-top: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(201, 24, 74, 0.3);
+        }
+        .upload-btn:hover {
+            background: linear-gradient(95deg, #ff6b89, #e01e55);
+            transform: scale(1.02);
+        }
+        .file-list {
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: #aaaac4;
+        }
+
+        /* gallery grid */
+        .gallery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #2a2a36;
+            padding-bottom: 0.5rem;
+        }
+        .gallery-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            display: flex;
+            gap: 0.5rem;
+        }
+        .counter {
+            background: #2a2a3a;
+            border-radius: 40px;
+            padding: 0.2rem 0.8rem;
+            font-size: 0.85rem;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.8rem;
+        }
+        .media-card {
+            background: #13131c;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            border: 1px solid #2b2b38;
+            transition: transform 0.2s, box-shadow 0.2s;
+            backdrop-filter: blur(2px);
+        }
+        .media-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 30px -12px rgba(0,0,0,0.5);
+            border-color: #ff6f9140;
+        }
+        .media-preview {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background: #09090e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .media-preview img, .media-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: 0.2s;
+        }
+        .media-info {
+            padding: 1rem;
+        }
+        .media-title {
+            font-weight: 700;
+            font-size: 1rem;
+            word-break: break-word;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .media-title span {
+            flex: 1;
+        }
+        .edit-icon {
+            background: #28283a;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+        .edit-icon:hover {
+            background: #ff4d6d;
+            color: white;
+        }
+        .media-desc {
+            font-size: 0.8rem;
+            color: #a2a2bb;
+            margin-top: 0.4rem;
+            word-break: break-word;
+        }
+        .media-meta {
+            font-size: 0.7rem;
+            color: #6f6f8a;
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+        }
+        .file-type {
+            background: #1e1e2c;
+            padding: 0.15rem 0.6rem;
+            border-radius: 16px;
+        }
+
+        /* modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(6px);
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal-card {
+            background: #1c1c28;
+            max-width: 480px;
+            width: 90%;
+            border-radius: 2rem;
+            padding: 1.8rem;
+            border: 1px solid #ff6f9155;
+        }
+        .modal-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .modal-card input, .modal-card textarea {
+            width: 100%;
+            background: #0b0b12;
+            border: 1px solid #3a3a4e;
+            border-radius: 1rem;
+            padding: 0.7rem 1rem;
+            color: white;
+            font-family: inherit;
+            margin-bottom: 1rem;
+        }
+        .modal-card textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 0.8rem;
+            justify-content: flex-end;
+        }
+        .modal-actions button {
+            padding: 0.5rem 1.2rem;
+            border-radius: 2rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .save-btn {
+            background: #ff4d6d;
+            color: white;
+        }
+        .cancel-btn {
+            background: #2c2c3e;
+            color: #ddd;
+        }
+
+        /* empty state */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            background: #0e0e16;
+            border-radius: 2rem;
+            color: #8e8eaa;
+        }
+
+        /* toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1e1e2e;
+            backdrop-filter: blur(12px);
+            padding: 0.8rem 1.6rem;
+            border-radius: 60px;
+            border-left: 4px solid #ff6f91;
+            font-size: 0.85rem;
+            z-index: 1100;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            animation: fadeInUp 0.3s ease;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 0.75rem;
+            color: #5f5f7a;
+        }
+        button, .edit-icon, .upload-btn {
+            user-select: none;
+        }
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            .grid { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="brand">
+        <h1>🜁 HYDRA NUDE</h1>
+        <p>infinite uploads · eternal gallery · no deletions</p>
+        <div class="badge">⚡ unlimited media | edit metadata | forever stored</div>
+    </div>
+
+    <div class="upload-card">
+        <div class="dropzone" id="dropzone">
+            <div class="upload-icon">📤🌀</div>
+            <p>Drag & drop images or videos here</p>
+            <p style="font-size:0.8rem; margin-top: 6px;">or click to select (no size limits, any amount)</p>
+            <input type="file" id="fileInput" multiple accept="image/*,video/*">
+            <div>
+                <button class="upload-btn" id="uploadBtn">⟳ UPLOAD FILES</button>
+            </div>
+            <div class="file-list" id="fileListPreview"></div>
+        </div>
+    </div>
+
+    <div class="gallery-header">
+        <div class="gallery-title">
+            🖤 ETERNAL VAULT
+            <span class="counter" id="mediaCount">0</span>
+        </div>
+        <div style="font-size:0.75rem;">✨ pics & videos — never deleted — edit anytime</div>
+    </div>
+    <div id="galleryGrid" class="grid">
+        <div class="empty-state">🌙 no media yet. upload your first image or video...</div>
+    </div>
+    <footer>hydra nude · all files persisted on VPS · no automatic deletion · edit mode enabled</footer>
+</div>
+
+<!-- edit modal -->
+<div id="editModal" class="modal">
+    <div class="modal-card">
+        <h3>✎ edit media</h3>
+        <input type="text" id="editTitle" placeholder="Title">
+        <textarea id="editDesc" placeholder="Description (optional)"></textarea>
+        <div class="modal-actions">
+            <button class="cancel-btn" id="closeModalBtn">Cancel</button>
+            <button class="save-btn" id="saveEditBtn">Save changes</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ---------- CONFIGURATION ----------
+    const API_BASE = '/api';
+    let currentEditId = null;
+    let allMedia = [];
+
+    // DOM elements
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const galleryGrid = document.getElementById('galleryGrid');
+    const mediaCountSpan = document.getElementById('mediaCount');
+    const editModal = document.getElementById('editModal');
+    const editTitle = document.getElementById('editTitle');
+    const editDesc = document.getElementById('editDesc');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const saveEditBtn = document.getElementById('saveEditBtn');
+    const fileListPreview = document.getElementById('fileListPreview');
+
+    // helpers
+    function showToast(msg, isError = false) {
+        const existingToast = document.querySelector('.toast');
+        if(existingToast) existingToast.remove();
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.style.borderLeftColor = isError ? '#ff3b5c' : '#6effa8';
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
+    }
+
+    // fetch all media from backend
+    async function fetchMedia() {
+        try {
+            const res = await fetch(`${API_BASE}/media`);
+            if(!res.ok) throw new Error('failed to load gallery');
+            const data = await res.json();
+            allMedia = data.sort((a,b) => new Date(b.uploadDate) - new Date(a.uploadDate));
+            renderGallery(allMedia);
+            mediaCountSpan.innerText = allMedia.length;
+        } catch(err) {
+            console.error(err);
+            showToast('⚠️ could not load gallery', true);
+        }
+    }
+
+    // render cards (images + videos)
+    function renderGallery(mediaArray) {
+        if(!mediaArray.length) {
+            galleryGrid.innerHTML = `<div class="empty-state">🌊 no media yet. upload your first image or video...</div>`;
+            return;
+        }
+        galleryGrid.innerHTML = mediaArray.map(media => {
+            const fileUrl = `/uploads/${media.filename}`;
+            const isVideo = media.mimeType && media.mimeType.startsWith('video/');
+            const previewHtml = isVideo 
+                ? `<video controls preload="metadata" style="width:100%; height:100%; object-fit:cover;"><source src="${fileUrl}" type="${media.mimeType}">Your browser doesn't support video</video>`
+                : `<img src="${fileUrl}" alt="${media.title}" loading="lazy" style="width:100%; height:100%; object-fit:cover;">`;
+            
+            const typeLabel = isVideo ? '🎬 video' : '🖼️ image';
+            const sizeFormatted = media.size ? formatBytes(media.size) : '? KB';
+            
+            return `
+                <div class="media-card" data-id="${media.id}">
+                    <div class="media-preview">
+                        ${previewHtml}
+                    </div>
+                    <div class="media-info">
+                        <div class="media-title">
+                            <span>${escapeHtml(media.title || 'untitled')}</span>
+                            <div class="edit-icon" data-id="${media.id}" data-title="${escapeHtml(media.title || '')}" data-desc="${escapeHtml(media.description || '')}">✎</div>
+                        </div>
+                        <div class="media-desc">${media.description ? escapeHtml(media.description) : '📝 no description'}</div>
+                        <div class="media-meta">
+                            <span class="file-type">${typeLabel}</span>
+                            <span>${sizeFormatted}</span>
+                            <span>📅 ${formatDate(media.uploadDate)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+
+        // attach edit listeners dynamically
+        document.querySelectorAll('.edit-icon').forEach(icon => {
+            icon.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const card = icon.closest('.media-card');
+                const mediaId = card ? card.getAttribute('data-id') : icon.getAttribute('data-id');
+                const origTitle = icon.getAttribute('data-title') || '';
+                const origDesc = icon.getAttribute('data-desc') || '';
+                openEditModal(mediaId, origTitle, origDesc);
+            });
+        });
+    }
+
+    function openEditModal(id, currentTitle, currentDesc) {
+        currentEditId = id;
+        editTitle.value = currentTitle;
+        editDesc.value = currentDesc;
+        editModal.style.display = 'flex';
+    }
+
+    function closeModal() {
+        editModal.style.display = 'none';
+        currentEditId = null;
+    }
+
+    async function saveEdit() {
+        if(!currentEditId) return;
+        const newTitle = editTitle.value.trim() || "untitled";
+        const newDesc = editDesc.value.trim();
+        try {
+            const res = await fetch(`${API_BASE}/media/${currentEditId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title: newTitle, description: newDesc })
+            });
+            if(!res.ok) throw new Error('edit failed');
+            const updated = await res.json();
+            showToast(`✏️ "${updated.title}" updated`);
+            fetchMedia(); // refresh gallery
+            closeModal();
+        } catch(err) {
+            showToast('❌ failed to edit metadata', true);
+            console.error(err);
+        }
+    }
+
+    // upload files (multiple, unlimited size)
+    async function uploadFiles(files) {
+        if(!files || files.length === 0) return;
+        const formData = new FormData();
+        for(let i = 0; i < files.length; i++) {
+            formData.append('files', files[i]);
+        }
+        // disable button during upload
+        uploadBtn.disabled = true;
+        uploadBtn.innerText = '⏫ uploading...';
+        showToast(`📡 uploading ${files.length} file(s) ...`);
+        try {
+            const res = await fetch('/upload', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await res.json();
+            if(!res.ok) throw new Error(result.error || 'upload error');
+            showToast(`✅ ${result.uploaded} files uploaded successfully! (${result.errors || 0} errors)`);
+            fetchMedia();  // refresh gallery
+            fileInput.value = ''; // clear
+            fileListPreview.innerHTML = '';
+        } catch(err) {
+            showToast(`❌ upload failed: ${err.message}`, true);
+        } finally {
+            uploadBtn.disabled = false;
+            uploadBtn.innerText = '⟳ UPLOAD FILES';
+        }
+    }
+
+    // preview selected files
+    function updateFilePreview(files) {
+        if(!files.length) {
+            fileListPreview.innerHTML = '';
+            return;
+        }
+        const names = Array.from(files).map(f => `${f.name} (${formatBytes(f.size)})`).join(', ');
+        fileListPreview.innerHTML = `📎 ${files.length} file(s) selected: ${names.substring(0, 100)}${names.length>100 ? '…' : ''}`;
+    }
+
+    // drag & drop logic
+    dropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropzone.classList.add('drag-over');
+    });
+    dropzone.addEventListener('dragleave', () => {
+        dropzone.classList.remove('drag-over');
+    });
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.classList.remove('drag-over');
+        const droppedFiles = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/') || f.type.startsWith('video/'));
+        if(droppedFiles.length === 0) {
+            showToast('❌ only images & videos are allowed', true);
+            return;
+        }
+        updateFilePreview(droppedFiles);
+        uploadFiles(droppedFiles);
+    });
+    dropzone.addEventListener('click', () => {
+        fileInput.click();
+    });
+    fileInput.addEventListener('change', (e) => {
+        if(e.target.files.length) {
+            updateFilePreview(e.target.files);
+            uploadFiles(e.target.files);
+        }
+    });
+    uploadBtn.addEventListener('click', () => {
+        if(fileInput.files.length) {
+            uploadFiles(fileInput.files);
+        } else {
+            showToast('📂 select files first', true);
+        }
+    });
+
+    // modal events
+    closeModalBtn.addEventListener('click', closeModal);
+    saveEditBtn.addEventListener('click', saveEdit);
+    window.addEventListener('click', (e) => {
+        if(e.target === editModal) closeModal();
+    });
+
+    // helper: format bytes
+    function formatBytes(bytes) {
+        if(bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    function formatDate(dateStr) {
+        if(!dateStr) return 'just now';
+        const date = new Date(dateStr);
+        return date.toLocaleDateString(undefined, { month:'short', day:'numeric', year:'numeric' });
+    }
+
+    function escapeHtml(str) {
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if(m === '&') return '&amp;';
+            if(m === '<') return '&lt;';
+            if(m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+
+    // initial fetch
+    fetchMedia();
+</script>
+</body>
+</html>
